@@ -290,13 +290,17 @@ Field* Message::GetFieldAndCheckType(int32_t number, enum FieldType type) {
 int32_t Message::GetInt32(int32_t number) {
   Field* field = GetFieldAndCheckType(number, FIELD_UINT32);
   uint32_t first_value = (*(field->value.v_uint32))[0];
-  return static_cast<int32_t>(first_value);
+  int32_t zig_zag_decoded =
+    static_cast<int32_t>((first_value >> 1) ^ (-(first_value & 1)));
+  return zig_zag_decoded;
 }
 
 int64_t Message::GetInt64(int32_t number) {
   Field* field = GetFieldAndCheckType(number, FIELD_UINT64);
   uint64_t first_value = (*(field->value.v_uint64))[0];
-  return static_cast<int64_t>(first_value);
+  int64_t zig_zag_decoded =
+    static_cast<int64_t>((first_value >> 1) ^ (-(first_value & 1)));
+  return zig_zag_decoded;
 }
 
 uint32_t Message::GetUInt32(int32_t number) {
@@ -374,7 +378,9 @@ std::vector<int32_t> Message::GetInt32Array(int32_t number) {
   std::vector<uint64_t> raw_array = GetUInt64Array(number);
   std::vector<int32_t> result;
   for (uint64_t raw_value : raw_array) {
-    result.push_back(static_cast<int32_t>(raw_value));
+    int32_t zig_zag_decoded =
+      static_cast<int32_t>((raw_value >> 1) ^ (-(raw_value & 1)));
+    result.push_back(zig_zag_decoded);
   }
   return result;
 }
@@ -383,7 +389,9 @@ std::vector<int64_t> Message::GetInt64Array(int32_t number) {
   std::vector<uint64_t> raw_array = GetUInt64Array(number);
   std::vector<int64_t> result;
   for (uint64_t raw_value : raw_array) {
-    result.push_back(static_cast<int64_t>(raw_value));
+    int64_t zig_zag_decoded =
+      static_cast<int64_t>((raw_value >> 1) ^ (-(raw_value & 1)));
+    result.push_back(zig_zag_decoded);
   }
   return result;
 }

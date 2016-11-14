@@ -79,7 +79,7 @@ void TestAll() {
     std::vector<uint8_t> bytes({0x08, 0x96, 0x01});
     Message message;
     message.ParseFromBytes(bytes.data(), bytes.size());
-    PP_EXPECT_EQ(150, message.GetInt(1));
+    PP_EXPECT_EQ(150, message.GetUInt64(1));
     return true;
   });
 
@@ -109,7 +109,7 @@ void TestAll() {
     message.ParseFromBytes(bytes.data(), bytes.size());
     Message* embedded_message = message.GetMessage(3);
     PP_EXPECT_NE(nullptr, embedded_message);
-    PP_EXPECT_EQ(150, embedded_message->GetInt(1));
+    PP_EXPECT_EQ(150, embedded_message->GetUInt64(1));
     return true;
   });
 
@@ -117,7 +117,7 @@ void TestAll() {
     std::vector<uint8_t> bytes({0x08, 0x96, 0x01, 0x08, 0x7f});
     Message message;
     message.ParseFromBytes(bytes.data(), bytes.size());
-    PP_EXPECT_EQ(150, message.GetInt(1));
+    PP_EXPECT_EQ(150, message.GetUInt64(1));
     std::vector<uint64_t> int_array = message.GetUInt64Array(1);
     PP_EXPECT_EQ(2, int_array.size());
     PP_EXPECT_EQ(150, int_array[0]);
@@ -125,6 +125,14 @@ void TestAll() {
     return true;
   });
 
+  TestFunction("NegativeVarInt", [] {
+    std::vector<uint8_t> bytes({0x08, 0x03});
+    Message message;
+    message.ParseFromBytes(bytes.data(), bytes.size());
+    PP_EXPECT_EQ(-2, message.GetInt64(1));
+    return true;
+  });
+  
   TestFunction("UInt32", [] {
     std::vector<uint8_t> bytes({0x0d, 0x01, 0x00, 0x00, 0x00});
     Message message;
