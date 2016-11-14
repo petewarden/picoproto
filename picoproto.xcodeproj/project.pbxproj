@@ -41,6 +41,7 @@
 		591D72A61DD7F24000232CAC /* picoproto.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = picoproto.cc; sourceTree = "<group>"; };
 		591D72AC1DD93CD100232CAC /* tf_to_dot */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = tf_to_dot; sourceTree = BUILT_PRODUCTS_DIR; };
 		591D72B31DD93CF900232CAC /* tf_to_dot.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tf_to_dot.cc; sourceTree = "<group>"; };
+		593AD8821DDA345500D30BAA /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +68,7 @@
 				591D72A31DD7E5ED00232CAC /* picoproto_test.cc */,
 				591D72A51DD7E64D00232CAC /* picoproto.h */,
 				591D72A61DD7F24000232CAC /* picoproto.cc */,
+				593AD8821DDA345500D30BAA /* README.md */,
 				591D72B31DD93CF900232CAC /* tf_to_dot.cc */,
 				591D729A1DD7E5BB00232CAC /* Products */,
 			);
