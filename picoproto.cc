@@ -15,11 +15,13 @@
 
 #include "picoproto.h"
 
-#include <stdio.h>
-
 namespace picoproto {
 
 namespace {
+
+// To keep the dependencies down, here's a local copy of the widespread bit_cast
+// operator. This is necessary because in practice weird things can happen if
+// you just try to use reinterpret_cast.
 template <class Dest, class Source>
 inline Dest bit_cast(const Source& source) {
   static_assert(sizeof(Dest) == sizeof(Source), "Sizes do not match");
@@ -28,6 +30,8 @@ inline Dest bit_cast(const Source& source) {
   return dest;
 }
 
+// These are defined in:
+// https://developers.google.com/protocol-buffers/docs/encoding
 enum WireType {
   WIRETYPE_VARINT = 0,
   WIRETYPE_64BIT = 1,
@@ -37,6 +41,7 @@ enum WireType {
   WIRETYPE_32BIT = 5,
 };
 
+// Pull bytes from the stream, updating the state.
 bool ConsumeBytes(uint8_t** current, size_t how_many, size_t* remaining) {
   if (how_many > *remaining) {
     PP_LOG(ERROR) << "ReadBytes overrun!";
@@ -47,6 +52,7 @@ bool ConsumeBytes(uint8_t** current, size_t how_many, size_t* remaining) {
   return true;
 }
 
+// Grabs a particular type from the byte stream.
 template <class T>
 T ReadFromBytes(uint8_t** current, size_t* remaining) {
   PP_CHECK(ConsumeBytes(current, sizeof(T), remaining));
