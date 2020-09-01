@@ -84,7 +84,7 @@ uint64_t ReadVarInt(uint8_t** current, size_t* remaining) {
   do {
     const uint8_t next_number = ReadFromBytes<uint8_t>(current, remaining);
     keep_going = (next_number >= 128);
-    result += (next_number & 0x7f) << shift;
+    result += (uint64_t)(next_number & 0x7f) << shift;
     shift += 7;
   } while (keep_going);
   return result;
