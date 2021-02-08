@@ -60,23 +60,6 @@ T ReadFromBytes(uint8_t** current, size_t* remaining) {
   return result;
 }
 
-void ReadWireTypeAndFieldNumber(uint8_t** current, size_t* remaining,
-                                uint8_t* wire_type, uint32_t* field_number) {
-  const uint8_t wire_type_and_field_number =
-      ReadFromBytes<uint8_t>(current, remaining);
-  *wire_type = wire_type_and_field_number & 0x07;
-  *field_number = wire_type_and_field_number >> 3;
-  if (*field_number >= 16) {
-    *field_number = *field_number & 0xf;
-    bool keep_going;
-    do {
-      const uint8_t next_number = ReadFromBytes<uint8_t>(current, remaining);
-      keep_going = (next_number >= 128);
-      *field_number = (*field_number << 7) | (next_number & 0x7f);
-    } while (keep_going);
-  }
-}
-
 uint64_t ReadVarInt(uint8_t** current, size_t* remaining) {
   uint64_t result = 0;
   bool keep_going;
@@ -88,6 +71,13 @@ uint64_t ReadVarInt(uint8_t** current, size_t* remaining) {
     shift += 7;
   } while (keep_going);
   return result;
+}
+
+void ReadWireTypeAndFieldNumber(uint8_t** current, size_t* remaining,
+                                uint8_t* wire_type, uint32_t* field_number) {
+  uint64_t wire_type_and_field_number = ReadVarInt(current, remaining);
+  *wire_type = wire_type_and_field_number & 0x07;
+  *field_number = wire_type_and_field_number >> 3;
 }
 
 }  // namespace
